@@ -1,3 +1,20 @@
+# STM32CubeIDE / Eclipse metadata
+.metadata/
+.settings/
+*.launch
+RemoteSystemsTempFiles/
+
+# CubeMX generated backup (optional, 팀 정책에 따라 다름)
+*.ioc.bak
+
+# OS/editor
+.DS_Store
+Thumbs.db
+*.swp
+
+# STM32CubeIDE workspace (레포 루트가 workspace라면)
+.metadata/
+
 # Prerequisites
 *.d
 
