@@ -70,3 +70,13 @@ dkms.conf
 
 # debug information files
 *.dwo
+
+# KiCad
+*-backups/
+fp-info-cache
+*.lck
+*.kicad_prl
+# STM32CubeIDE build output
+Debug/
+Release/
+hardware/**/.history/
