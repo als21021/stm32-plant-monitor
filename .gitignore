@@ -76,3 +76,7 @@ dkms.conf
 fp-info-cache
 *.lck
 *.kicad_prl
+# STM32CubeIDE build output
+Debug/
+Release/
+hardware/**/.history/
