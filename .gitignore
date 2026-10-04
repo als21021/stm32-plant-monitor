@@ -80,3 +80,4 @@ fp-info-cache
 Debug/
 Release/
 hardware/**/.history/
+.history/
