@@ -13,8 +13,8 @@
 
 /* ---- 토양 센서 ---- */
 #define SOIL_MOVING_AVG_COUNT      12U     /* FR-01 12회 이동평균 [명세서 미정: 이름] */
-#define SOIL_RAW_DRY               3000U   /* FR-02 건조(공기 중) 기준 (TBD) [명세서 미정: 이름] */
-#define SOIL_RAW_WET               1300U   /* FR-02 침수(물 속) 기준 (TBD) [명세서 미정: 이름] */
+#define SOIL_RAW_DRY               3400U   /* FR-02 건조(공기 중) 기준 (2026-10-12 실측, 3.3V) [명세서 미정: 이름] */
+#define SOIL_RAW_WET               1270U   /* FR-02 침수(물 속) 기준 (2026-10-12 실측, 3.3V) [명세서 미정: 이름] */
 #define SOIL_RAW_MARGIN            200U    /* FR-11, SR-02 이상 판정 마진 (TBD) [명세서 미정: 이름] */
 
 /* ---- 급수 ---- */
