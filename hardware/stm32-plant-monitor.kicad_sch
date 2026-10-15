@@ -4108,7 +4108,7 @@
 		)
 		(uuid "b63606fe-6ad1-4b98-a5d0-78712c0a4706")
 	)
-	(text "[ASSUMPTION] Connector pin order follows common modules (web search) - verify against board silkscreen\nJ1 HW-390: GND / VCC / AOUT (work report 2026-10-12)\nJ2 GY-302: VCC / GND / SCL / SDA / ADDR, on-board I2C pull-ups, ADDR=GND -> 0x23\nJ3 microSD (Catalex type): GND / VCC / MISO / MOSI / SCK / CS, VCC 5V (on-board 3.3V LDO)\nJ4 relay input: DC+ / DC- / IN, 5V module - check OFF behavior with 3.3V IN\nJ6 relay contacts: NO / COM / NC (verify terminal order)"
+	(text "[ASSUMPTION] Connector pin order follows common modules (web search) - verify against board silkscreen\nJ1 HW-390: GND / VCC / AOUT (work report 2026-10-12)\nJ2 GY-302: VCC / GND / SCL / SDA / ADDR, on-board I2C pull-ups, ADDR=GND -> 0x23\nJ3 microSD (Catalex type): GND / VCC / MISO / MOSI / SCK / CS, VCC 5V (on-board 3.3V LDO)\nJ4 relay input: IN / GND / VCC(5V) (verified 2026-10-14), S8550 PNP low-trigger:\nPA8 open-drain + R2 10k pull-up to +5V (3.3V HIGH cannot turn relay OFF)\nJ6 relay contacts: NO / COM / NC (verify terminal order)"
 		(exclude_from_sim no)
 		(at 175.26 30.48 0)
 		(effects
@@ -4129,6 +4129,12 @@
 			(justify left bottom)
 		)
 		(uuid "ffa030b2-5425-430f-b09f-892b2dcdc059")
+	)
+	(junction
+		(at 154.94 107.95)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "e1d12f9e-4019-4bde-b32c-58086d345e70")
 	)
 	(no_connect
 		(at 64.77 124.46)
@@ -4346,6 +4352,16 @@
 	)
 	(wire
 		(pts
+			(xy 154.94 105.41) (xy 154.94 107.95)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "13b7c0fa-94c5-4840-b392-8ec34a493e86")
+	)
+	(wire
+		(pts
 			(xy 158.75 93.98) (xy 151.13 93.98)
 		)
 		(stroke
@@ -4436,7 +4452,7 @@
 	)
 	(wire
 		(pts
-			(xy 158.75 113.03) (xy 151.13 113.03)
+			(xy 158.75 107.95) (xy 151.13 107.95)
 		)
 		(stroke
 			(width 0)
@@ -4565,7 +4581,7 @@
 		(uuid "26b3bc93-e1f8-4e0d-8aa5-36ab697cc80d")
 	)
 	(label "PUMP_RELAY"
-		(at 151.13 113.03 180)
+		(at 151.13 107.95 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -5657,6 +5673,83 @@
 		)
 	)
 	(symbol
+		(lib_id "power:+5V")
+		(at 154.94 97.79 90)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "50f681e8-7417-4224-a307-5a997ff036d7")
+		(property "Reference" "#PWR045"
+			(at 154.94 97.79 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "+5V"
+			(at 149.99 97.79 90)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 154.94 97.79 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 154.94 97.79 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"+5V\""
+			(at 154.94 97.79 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "2911cc37-704a-416a-982f-3546a2722f3a")
+		)
+		(instances
+			(project "stm32-plant-monitor"
+				(path "/8c11d841-cc40-4395-990f-fa64c6c3dd44"
+					(reference "#PWR045")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "power:GND")
 		(at 100.33 154.94 0)
 		(unit 1)
@@ -6622,7 +6715,7 @@
 	)
 	(symbol
 		(lib_id "power:+5V")
-		(at 158.75 107.95 90)
+		(at 158.75 113.03 90)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
@@ -6632,7 +6725,7 @@
 		(dnp no)
 		(uuid "a51479e6-c70a-411e-9b2c-b5d1110d9417")
 		(property "Reference" "#PWR038"
-			(at 158.75 107.95 90)
+			(at 158.75 113.03 90)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -6643,7 +6736,7 @@
 			)
 		)
 		(property "Value" "+5V"
-			(at 153.8 107.95 90)
+			(at 153.8 113.03 90)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -6653,7 +6746,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 158.75 107.95 0)
+			(at 158.75 113.03 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -6664,7 +6757,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 158.75 107.95 0)
+			(at 158.75 113.03 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -6675,7 +6768,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"+5V\""
-			(at 158.75 107.95 0)
+			(at 158.75 113.03 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -6692,6 +6785,87 @@
 			(project "stm32-plant-monitor"
 				(path "/8c11d841-cc40-4395-990f-fa64c6c3dd44"
 					(reference "#PWR038")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R")
+		(at 154.94 101.6 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(uuid "ada391b1-d493-447c-9104-c650e45f29e2")
+		(property "Reference" "R2"
+			(at 156.972 100.33 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "10k"
+			(at 156.972 102.87 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" ""
+			(at 153.162 101.6 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 154.94 101.6 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Resistor"
+			(at 154.94 101.6 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "1536ea76-99bf-4a66-b7a1-8f4aeed6a0ff")
+		)
+		(pin "2"
+			(uuid "3db320a9-e651-4828-9075-5cd9e2f354f5")
+		)
+		(instances
+			(project "stm32-plant-monitor"
+				(path "/8c11d841-cc40-4395-990f-fa64c6c3dd44"
+					(reference "R2")
 					(unit 1)
 				)
 			)

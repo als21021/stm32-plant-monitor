@@ -34,6 +34,6 @@
 #define MAX_RETRY                  3U      /* FR-08 I2C 재시도 횟수 (TBD) */
 
 /* ---- 하드웨어 극성 ---- */
-#define PUMP_RELAY_ACTIVE_LOW      1       /* SR-01 릴레이 active 레벨 확인 필요 */
+#define PUMP_RELAY_ACTIVE_LOW      1       /* SR-01 Low 트리거 확인(S8550 PNP), PA8 오픈 드레인 + 5V 풀업 */
 
 #endif /* CONFIG_H */
