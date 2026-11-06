@@ -13,10 +13,12 @@ app_status_t pump_init(void);
 /*
  * 펌프를 켜고 즉시 반환한다. duration_ms 후 pump_update()가 자동으로 끈다.
  * - duration_ms는 PUMP_MAX_ON_MS로 잘라낸다 (FR-04 안전 상한)
- * - 이미 동작 중이면 무시하고 APP_ERR_NOT_READY 반환
+ * - 이미 동작 중이거나 init 전이면 무시하고 APP_ERR_NOT_READY 반환
+ * - duration_ms == 0이면 켜지 않고 APP_ERR_RANGE 반환
  */
 app_status_t pump_start(uint32_t duration_ms, uint32_t now_ms);
 
+/* 즉시 OFF. 상태와 관계없이 언제 불러도 안전 */
 void pump_stop(void);
 
 /* main 루프에서 매 회 호출. 시간이 다 되면 OFF */
