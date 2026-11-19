@@ -29,6 +29,10 @@
 #include <stdio.h>
 #include "uart_printf.h"
 #include "watchdog.h"
+#include "config.h"
+#include "soil_sensor.h"
+#include "pump.h"
+#include "watering.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -60,7 +64,68 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+static const char *app_status_str(app_status_t s)
+{
+  switch (s)
+  {
+  case APP_OK:            return "OK";
+  case APP_ERR_NOT_READY: return "NOT_READY";
+  case APP_ERR_TIMEOUT:   return "TIMEOUT";
+  case APP_ERR_RANGE:     return "RANGE";
+  case APP_ERR_COMM:      return "COMM";
+  default:                return "?";
+  }
+}
 
+static const char *watering_state_str(watering_state_t s)
+{
+  switch (s)
+  {
+  case WATERING_IDLE:         return "IDLE";
+  case WATERING_PUMPING:      return "PUMPING";
+  case WATERING_SOAK_WAIT:    return "SOAK_WAIT";
+  case WATERING_SENSOR_ERROR: return "SENSOR_ERROR";
+  case WATERING_LOCKED_LIMIT: return "LOCKED_LIMIT";
+  case WATERING_LOCKED_FAIL:  return "LOCKED_FAIL";
+  default:                    return "?";
+  }
+}
+
+/*
+ * 급수 흐름 (FR-01, FR-04, FR-05, FR-11, FR-12, SR-02, SR-03)
+ * SOIL_READ_PERIOD_MS마다 토양 센서 측정 → watering 판단 → 측정 주기 로그 한 줄
+ * 로그 형식은 FR-07(SD카드) 도입 시 그대로 옮길 수 있게 한 줄로 유지
+ */
+static void watering_task(uint32_t now_ms)
+{
+  static uint32_t last_read_ms = 0;
+  static bool     first_read   = true;
+  static uint8_t  moisture     = 0;   /* 에러 시에는 마지막 정상값 유지 (로그용) */
+  static watering_state_t last_state = WATERING_IDLE;
+
+  if (!first_read && (uint32_t)(now_ms - last_read_ms) < SOIL_READ_PERIOD_MS)
+  {
+    return;
+  }
+  first_read = false;
+  last_read_ms = now_ms;
+
+  uint16_t raw = 0;
+  app_status_t soil_status = soil_sensor_read(&raw, &moisture);
+  watering_update(soil_status, moisture, now_ms);
+
+  watering_state_t state = watering_get_state();
+  if (state != last_state)
+  {
+    printf("[WATER] %s -> %s\r\n", watering_state_str(last_state), watering_state_str(state));
+    last_state = state;
+  }
+
+  printf("[LOG] t=%lu soil=%u%% raw=%u (%s) water=%s pump=%s\r\n",
+         (unsigned long)now_ms, (unsigned)moisture, (unsigned)raw,
+         app_status_str(soil_status), watering_state_str(state),
+         pump_is_running() ? "ON" : "OFF");
+}
 /* USER CODE END 0 */
 
 /**
@@ -97,8 +162,17 @@ int main(void)
   MX_I2C1_Init();
   MX_SPI2_Init();
   /* USER CODE BEGIN 2 */
+  /* SR-01: 다른 초기화보다 먼저 펌프 OFF 확정 */
+  pump_init();
+
   uart_printf_init();
   printf("\r\n[BOOT] plant monitor start\r\n");
+
+  if (soil_sensor_init() != APP_OK)
+  {
+    printf("[SOIL] init failed\r\n");   /* 측정 실패는 watering이 SENSOR_ERROR로 처리 (SR-02) */
+  }
+  watering_init();
 
   /* 리셋 원인 확인 + 연속 IWDG 리셋 횟수 갱신 (watchdog_start보다 먼저) */
   watchdog_check_reset_cause();
@@ -125,6 +199,14 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+    uint32_t now_ms = HAL_GetTick();
+
+    /* 펌프 OFF 타이밍은 매 루프 확인 (FR-04, PUMP_MAX_ON_MS 상한) */
+    pump_update(now_ms);
+    watering_task(now_ms);
+
+    /* TODO: 보광 흐름 (light_sensor → lighting → led)은 조도 센서 API 정리 후 연결 (상진) */
+
     /* 워치독 리프레시: 루프가 2초 이상 멈추면 IWDG 리셋 발생 */
     watchdog_kick();
     /* 1시간 정상 동작 시 연속 리셋 횟수 초기화 */
