@@ -28,6 +28,7 @@
 /* USER CODE BEGIN Includes */
 #include <stdio.h>
 #include "uart_printf.h"
+#include "watchdog.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -97,7 +98,24 @@ int main(void)
   MX_SPI2_Init();
   /* USER CODE BEGIN 2 */
   uart_printf_init();
-  printf("printf 연결 테스트\r\n");
+  printf("\r\n[BOOT] plant monitor start\r\n");
+
+  /* 리셋 원인 확인 + 연속 IWDG 리셋 횟수 갱신 (watchdog_start보다 먼저) */
+  watchdog_check_reset_cause();
+  if (watchdog_was_iwdg_reset())
+  {
+    printf("[WDG] IWDG reset detected\r\n");
+  }
+  printf("[WDG] IWDG reset count: %lu\r\n", watchdog_get_reset_count());
+  if (watchdog_is_reset_limit_reached())
+  {
+    /* TODO: 안전 모드 동작 미정 (팀 논의 필요) */
+    printf("[WDG] reset limit reached\r\n");
+  }
+
+  /* 모든 초기화가 끝난 뒤 IWDG 시작 (이후 약 2초 안에 kick 필요) */
+  watchdog_start();
+  printf("[WDG] IWDG started\r\n");
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -107,6 +125,10 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+    /* 워치독 리프레시: 루프가 2초 이상 멈추면 IWDG 리셋 발생 */
+    watchdog_kick();
+    /* 1시간 정상 동작 시 연속 리셋 횟수 초기화 */
+    watchdog_check_stable_time();
   }
   /* USER CODE END 3 */
 }

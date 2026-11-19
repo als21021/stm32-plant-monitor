@@ -38,6 +38,10 @@
 /* ---- 통신 ---- */
 #define MAX_RETRY                  3U      /* FR-08 I2C 재시도 횟수 (TBD) */
 
+/* ---- 워치독 ---- */
+#define IWDG_RESET_LIMIT           3U                       /* 연속 IWDG 리셋 허용 횟수 N [명세서 미정] */
+#define IWDG_RESET_CLEAR_MS        (60UL * 60UL * 1000UL)   /* 1시간 정상 동작 시 리셋 횟수 초기화 [명세서 미정] */
+
 /* ---- 하드웨어 극성 ---- */
 #define PUMP_RELAY_ACTIVE_LOW      1       /* SR-01 Low 트리거 확인(S8550 PNP), PA8 오픈 드레인 + 5V 풀업 */
 
