@@ -11,6 +11,11 @@
 #define SOIL_READ_PERIOD_MS        1000U   /* FR-01 (TBD, 가정 1000ms) */
 #define LIGHT_READ_PERIOD_MS       1000U   /* FR-03 */
 
+/* ---- 조도 센서 ---- */
+#define LIGHT_I2C_ADDR             (0x23U << 1)  /* ADDR 핀 GND/floating=0x23, VCC=0x5C. HAL은 1비트 shift 필요 */
+#define LIGHT_I2C_TIMEOUT_MS       100U          /* I2C 통신 타임아웃 */
+#define LIGHT_MEASURE_WAIT_MS      180U          /* 측정 시작 후 첫 값 대기 (센서 최대 약 180ms) */
+
 /* ---- 토양 센서 ---- */
 #define SOIL_MOVING_AVG_COUNT      12U     /* FR-01 12회 이동평균 */
 #define SOIL_RAW_DRY               3185U   /* FR-02 건조(공기 중) 기준 (2026-10-14 실측, 3.3V, PA0 680kΩ 풀다운) */
